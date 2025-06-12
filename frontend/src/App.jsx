@@ -21,8 +21,7 @@ function App() {
 
     const tx = new Transaction().add(instruction)
 
-    let commitment = "processed";
-    let {blockhash} = await connection.getLatestBlockhash(commitment);
+    let {blockhash} = await connection.getLatestBlockhash();
     tx.recentBlockhash = blockhash
 
     tx.feePayer = fromPubKey
@@ -34,7 +33,7 @@ function App() {
     })
 
     console.log(serializedTX);
-    await axios.post("http:://localhost:3000/api/v1/sign",{
+    await axios.post("http://localhost:3000/api/v1/txn/sign",{
       message: serializedTX,
       retry: false
     })
