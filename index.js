@@ -2,11 +2,12 @@
 
 const express = require("express");
 const { userModel } = require("./model");
-const { Keypair } = require("@solana/web3.js");
+const { Keypair, Transaction,Connection } = require("@solana/web3.js");
 const app = express();
 const PORT = 3000
 const jwt  = require("jsonwebtoken")
 const JWT_SECRET = "123456" 
+const connection = new Connection("https://devnet.helius-rpc.com/?api-key=d78df475-693e-4990-82a9-01cbfe390f7a")
 
 app.use(express.json())
 
@@ -55,7 +56,22 @@ app.post("/api/v1/signin",(req, res)=>{
 })
 
 
-app.get("/api/v1/txn",(req, res)=>{
+app.get("/api/v1/txn/sign",async(req, res)=>{
+    const serializedTransaction = req.body.message;
+    const tx = Transaction.from(serializedTransaction)
+
+
+    //get private key from the db and then get it to sign the transaction
+    // const user = await userModel.find({
+    //     where:{
+    //         _id: "..."
+    //     }
+    // })
+    // const privateKey = user.privateKey
+const keyPair = Keypair.fromSecretKey(privateKey);
+
+    tx.sign(keyPair)
+   const transactionDone = await connection.sendTransaction(tx)
     res.json({
         "message":"txn check endpoint"
     })
