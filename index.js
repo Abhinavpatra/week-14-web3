@@ -78,7 +78,7 @@ app.post("/api/v1/txn/sign",async(req, res)=>{
     const privateKeyBase58 =  bs58.default.decode(process.env.PRIVATE_KEY)
     console.log("hi0.5")
     const keyPair = Keypair.fromSecretKey(privateKeyBase58);
-
+    
     console.log("hi1")
     tx.sign(keyPair)
     console.log("hi2");
@@ -94,6 +94,9 @@ app.post("/api/v1/txn/sign",async(req, res)=>{
 })
 
 app.get("/api/v1/clear",async (req,res)=>{
+//     const keyPaircheck = Keypair.fromSecretKey(bs58.default.decode("61M33n6JayssjygFpQ6dWLPeZmgM19mNiY6kE8VctzPfMYLQj8mEqVu2E9bxa4oAiGGufQwT6c8CpkKtvF21aN1P"));
+// console.log(keyPaircheck.publicKey)
+
     console.log("deletion initiated")
     const del = await userModel.collection.drop()
     console.log("deleted")
