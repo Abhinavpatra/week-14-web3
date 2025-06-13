@@ -4,16 +4,17 @@ import { Connection, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } f
 import axios from 'axios'
 
 function App() {
-  const connection = new Connection("https://devnet.helius-rpc.com/?api-key=d78df475-693e-4990-82a9-01cbfe390f7a")
-  const fromPubKey = new PublicKey("2boZeCb6whqr1XqW2bJLV4ZHyCMsVvnHP4GZJd1dDnkw")
-  const toPubKey = new PublicKey("3vAzvartXm37aipvjG8yqfjg1EuY5qsKRrcbwhB9VGRg")
-
+  const connection = new Connection(import.meta.env.VITE_CONNECTION_STRING)
+  const fromPubKey = new PublicKey(import.meta.env.VITE_FROM_PUBKEY)
+  const toPubKey = new PublicKey(import.meta.env.VITE_TO_PUBKEY)
+  const [signature, setSignature] = useState("");
 
   const [count, setCount] = useState(0)
+  
   async function sendSol(){
     const instruction = SystemProgram.transfer({
       fromPubkey:fromPubKey,
-      toPubkey:new PublicKey("3vAzvartXm37aipvjG8yqfjg1EuY5qsKRrcbwhB9VGRg"),
+      toPubkey:toPubKey,
       lamports: 0.001 * LAMPORTS_PER_SOL
 
     })
@@ -33,18 +34,31 @@ function App() {
     })
 
     console.log(serializedTX);
-    await axios.post("http://localhost:3000/api/v1/txn/sign",{
+    
+    const response = await axios.post("http://localhost:3000/api/v1/txn/sign",{
       message: serializedTX,
       retry: false
     })
+
+    setSignature(await response.data.response.transactionDone)
+    setTimeout(()=>{
+    console.log(response.data.response.transactionDone)
+
+    },1000)
   }
 
   return (
     <>
     <div>
+      On pressing the button it will send 0.001 sol from user account hardcoded in frontend to the user PublicKey
+      <br />
+
       <input type="text" placeholder='username'/>
       <input type="text" placeholder='password'  />
       <input type="text" placeholder='Amount' />
+      <div>
+        Transation signature: <p>{signature}</p> 
+      </div>
       <button onClick={sendSol}>Send transaction</button>
     </div>
     </>

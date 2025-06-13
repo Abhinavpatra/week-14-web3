@@ -76,6 +76,7 @@ app.post("/api/v1/txn/sign",async(req, res)=>{
     
     console.log("hi0")
     const privateKeyBase58 =  bs58.default.decode(process.env.PRIVATE_KEY)
+    // since private key is in s string format.
     console.log("hi0.5")
     const keyPair = Keypair.fromSecretKey(privateKeyBase58);
     
@@ -87,7 +88,8 @@ app.post("/api/v1/txn/sign",async(req, res)=>{
 
    console.log(transactionDone)
     res.json({
-        "message":"txn check endpoint"
+        "message":"txn check endpoint",
+        "response":{transactionDone}
     })
 
 
